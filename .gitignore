@@ -16,7 +16,6 @@ src/be/grpc-server/target/
 ### IntelliJ IDEA ###
 .idea
 *.iws
-*.iml
 *.ipr
 
 ### NetBeans ###

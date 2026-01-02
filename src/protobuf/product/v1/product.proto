@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package product.v1;
+
+import "buf/validate/validate.proto";
+
+// Search Products
+message SearchProductsRequest {
+  string term = 1;
+}
+
+message SearchProductsResponse {
+  repeated ProductSearchResult results = 1;
+
+  message ProductSearchResult {
+    string id = 1;
+    string name = 2;
+    string image_url = 3;
+    bool is_available = 4;
+    repeated string tags = 5;
+  }
+}
+
+// Product Details
+message GetProductDetailsRequest {
+  string product_id = 1 [(buf.validate.field).string.uuid = true];
+}
+
+message GetProductDetailsResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string image_url = 4;
+  bool is_available = 5;
+  repeated string tags = 6;
+}
+
+service ProductService {
+  rpc SearchProducts(SearchProductsRequest) returns (SearchProductsResponse);
+
+  rpc GetProductDetails(GetProductDetailsRequest) returns (GetProductDetailsResponse);
+}

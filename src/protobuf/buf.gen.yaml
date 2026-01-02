@@ -1,0 +1,22 @@
+version: v2
+managed:
+  enabled: true
+  disable:
+  - file_option: java_package
+    module: buf.build/bufbuild/protovalidate
+
+  override:
+    - file_option: java_package
+      value: "dev.michaelfarrant.grpc.generated"
+
+    # Recommended for Java to prevent one massive file per proto
+    - file_option: java_multiple_files
+      value: true
+plugins:
+  # 1. Generates the Protobuf Message classes (the data models)
+  - remote: buf.build/protocolbuffers/java:v33.2
+    out: ../be/grpc-server/target/generated-sources/protobuf
+
+  # 2. Generates the gRPC Service classes (the server base and client stubs)
+  - remote: buf.build/grpc/java:v1.77.0
+    out: ../be/grpc-server/target/generated-sources/protobuf

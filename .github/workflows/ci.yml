@@ -20,4 +20,5 @@ jobs:
           java-version: '25'
 
       - name: maven build
+        working-directory: ./src/be/grpc-server
         run: mvn clean verify -B

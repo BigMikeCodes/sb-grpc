@@ -18,7 +18,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '25'
+          cache: 'maven'
+          cache-dependency-path: './src/be/grpc-server/pom.xml'
 
       - name: maven build
-        working-directory: ./src/be/grpc-server
+        working-directory: './src/be/grpc-server'
         run: mvn clean verify -B

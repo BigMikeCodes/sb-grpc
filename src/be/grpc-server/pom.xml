@@ -34,10 +34,12 @@
 
     <properties>
         <java.version>25</java.version>
-        <grpc.version>1.77.0</grpc.version>
-        <protobuf-java.version>4.33.2</protobuf-java.version>
-        <spring-grpc.version>1.0.0</spring-grpc.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <grpc.version>1.77.1</grpc.version>
+        <protobuf-java.version>4.33.2</protobuf-java.version>
+        <spring-grpc.version>1.0.1</spring-grpc.version>
+
         <protovalidate.version>1.1.0</protovalidate.version>
         <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
         <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
@@ -76,11 +78,6 @@
                 <version>${spring-grpc.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.google.protobuf</groupId>
-                <artifactId>protobuf-java</artifactId>
-                <version>${protobuf-java.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

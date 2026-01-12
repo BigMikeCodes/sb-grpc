@@ -43,6 +43,15 @@
         <protovalidate.version>1.1.0</protovalidate.version>
         <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
         <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
+        <jib-maven-plugin.version>3.5.1</jib-maven-plugin.version>
+        <git-commit-id-maven-plugin.version>9.0.2</git-commit-id-maven-plugin.version>
+
+<!--        Base image-->
+        <from.image>gcr.io/distroless/java25-debian13@sha256:cc3bb44755599d4c25c26c43b05761eeb1da2e779172cee258c2202ca071abfa</from.image>
+
+<!--        Produced image (tags applied further down)-->
+        <to.image>bigmikecodes/grpc-server</to.image>
+
     </properties>
 
     <dependencies>
@@ -127,6 +136,52 @@
                     </execution>
                 </executions>
 
+            </plugin>
+
+<!--            Expose git info in builds-->
+            <plugin>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <version>${git-commit-id-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>get-git-info</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <generateGitPropertiesFile>false</generateGitPropertiesFile>
+                    <commitIdGenerationMode>full</commitIdGenerationMode>
+                </configuration>
+            </plugin>
+
+<!--            Build container with Jib-->
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib-maven-plugin.version}</version>
+                <configuration>
+                    <from>
+                        <image>${from.image}</image>
+                    </from>
+                    <to>
+                        <!--suppress UnresolvedMavenProperty -->
+                        <image>${to.image}:${git.commit.id.full}</image>
+                        <!--Populated via git-commit-id-maven-plugin -->
+                    </to>
+                    <container>
+                        <mainClass>dev.michaelfarrant.grpcserver.GrpcServerApplication</mainClass>
+                        <jvmFlags>
+                            <jvmFlag>-XX:MaxRAMPercentage=75.0</jvmFlag>
+                            <jvmFlag>-XX:+AlwaysPreTouch</jvmFlag>
+                            <jvmFlag>-XX:+UseStringDeduplication</jvmFlag>
+                            <jvmFlag>-XX:+DisableExplicitGC</jvmFlag>
+                        </jvmFlags>
+                    </container>
+                </configuration>
             </plugin>
 
         </plugins>

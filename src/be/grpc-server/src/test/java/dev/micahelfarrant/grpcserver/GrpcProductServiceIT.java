@@ -13,7 +13,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GrpcProductServiceIntegrationTests extends GrpcServerIntegrationTest {
+public class GrpcProductServiceIT extends AbstractGrpcServerIT {
 
     private final ProductServiceGrpc.ProductServiceBlockingV2Stub blockingStub =
             ProductServiceGrpc.newBlockingV2Stub(sutChannel);

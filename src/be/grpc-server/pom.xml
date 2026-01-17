@@ -39,8 +39,8 @@
         <grpc.version>1.77.1</grpc.version>
         <protobuf-java.version>4.33.2</protobuf-java.version>
         <spring-grpc.version>1.0.1</spring-grpc.version>
-
         <protovalidate.version>1.1.0</protovalidate.version>
+
         <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
         <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
         <jib-maven-plugin.version>3.5.1</jib-maven-plugin.version>
@@ -54,6 +54,7 @@
 
         <junit-jupiter.version>6.0.2</junit-jupiter.version>
         <testcontainers.version>2.0.3</testcontainers.version>
+        <faildafe-plugin.version>3.5.4</faildafe-plugin.version>
     </properties>
 
     <dependencies>
@@ -198,6 +199,15 @@
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
                 <version>${jib-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>build-container</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>dockerBuild</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <from>
                         <image>${from.image}</image>
@@ -216,6 +226,26 @@
                             <jvmFlag>-XX:+DisableExplicitGC</jvmFlag>
                         </jvmFlags>
                     </container>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${faildafe-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <systemPropertyVariables>
+                        <!--suppress UnresolvedMavenProperty -->
+                        <sut.image.name>${to.image}:${git.commit.id.full}</sut.image.name>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
 

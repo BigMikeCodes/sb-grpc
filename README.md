@@ -16,7 +16,7 @@ Aim is for this to provide a realistic example of something you'd see in the wil
 - [x] Proto Validate server side validation
 - [x] Containerisation
 - [ ] CI pipeline
-- [ ] Tests
+- [x] Integration tests with Testcontainers
 - [ ] Spring Security
 - [ ] Front end client (Flutter app?)
 - [ ] Deploy somewhere (GCP Cloud Run?)

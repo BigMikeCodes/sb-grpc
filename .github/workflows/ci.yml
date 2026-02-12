@@ -10,7 +10,7 @@ jobs:
       - name: setup buf
         uses: bufbuild/buf-action@v1
         with:
-          version: 1.62.1
+          version: 1.65.0
           setup_only: true
 
       - name: setup java

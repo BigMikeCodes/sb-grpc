@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.2</version>
+        <version>4.0.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -37,9 +37,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <grpc.version>1.79.0</grpc.version>
-        <protobuf-java.version>4.33.5</protobuf-java.version>
+        <protobuf-java.version>4.34.0</protobuf-java.version>
         <spring-grpc.version>1.0.2</spring-grpc.version>
-        <protovalidate.version>1.1.0</protovalidate.version>
+        <protovalidate.version>1.1.1</protovalidate.version>
 
         <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
         <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
@@ -47,7 +47,7 @@
         <git-commit-id-maven-plugin.version>9.0.2</git-commit-id-maven-plugin.version>
 
 <!--        Base image-->
-        <from.image>gcr.io/distroless/java25-debian13@sha256:cc3bb44755599d4c25c26c43b05761eeb1da2e779172cee258c2202ca071abfa</from.image>
+        <from.image>gcr.io/distroless/java25-debian13@sha256:34596c2b01eae269c67370572ccf9cba6cd26ecd2eb171e1d90419060c6297c5</from.image>
 
 <!--        Produced image (tags applied further down)-->
         <to.image>bigmikecodes/grpc-server</to.image>

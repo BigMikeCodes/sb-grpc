@@ -53,7 +53,7 @@
 
         <junit-jupiter.version>6.0.2</junit-jupiter.version>
         <testcontainers.version>2.0.3</testcontainers.version>
-        <faildafe-plugin.version>3.5.4</faildafe-plugin.version>
+        <failsafe-plugin.version>3.5.4</failsafe-plugin.version>
     </properties>
 
     <dependencies>
@@ -228,7 +228,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${faildafe-plugin.version}</version>
+                <version>${failsafe-plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>

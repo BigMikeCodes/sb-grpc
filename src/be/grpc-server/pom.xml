@@ -46,7 +46,7 @@
         <git-commit-id-maven-plugin.version>9.0.2</git-commit-id-maven-plugin.version>
 
 <!--        Base image-->
-        <from.image>gcr.io/distroless/java25-debian13@sha256:583ba2e08558063002bd1b5874a81b33b7204a0ad46727d4b6cbeff5a25935ba</from.image>
+        <from.image>gcr.io/distroless/java25-debian13@sha256:e1656e4b0450ee3343ca54f37d040385594734d3b4085b12ea0c4d9f601101bb</from.image>
 
 <!--        Produced image (tags applied further down)-->
         <to.image>bigmikecodes/grpc-server</to.image>

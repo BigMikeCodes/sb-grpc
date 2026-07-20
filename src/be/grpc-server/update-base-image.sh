@@ -5,7 +5,7 @@ POM_IMAGE_SHA=$(grep -Po '(?<=<from.image>).*?(?=</from.image>)' ./pom.xml)
 BASE_IMAGE=$(cut --delimiter='@' -f1 <<< "$POM_IMAGE_SHA")
 
 # get latest sha from remote
-REMOTE_SHA=$(docker buildx imagetools inspect $BASE_IMAGE:latest | head -n 3 | tail -n 1 | awk '{print $2}')
+REMOTE_SHA=$(docker buildx imagetools inspect "$BASE_IMAGE":latest | head -n 3 | tail -n 1 | awk '{print $2}')
 REMOTE_IMAGE_SHA="$BASE_IMAGE@$REMOTE_SHA"
 
 echo "local (pom): $POM_IMAGE_SHA"

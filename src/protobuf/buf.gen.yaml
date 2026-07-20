@@ -18,5 +18,5 @@ plugins:
     out: ../be/grpc-server/target/generated-sources/protobuf
 
   # 2. Generates the gRPC Service classes (the server base and client stubs)
-  - remote: buf.build/grpc/java:v1.82.0
+  - remote: buf.build/grpc/java:v1.82.2
     out: ../be/grpc-server/target/generated-sources/protobuf

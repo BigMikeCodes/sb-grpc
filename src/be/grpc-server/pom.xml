@@ -36,7 +36,7 @@
         <java.version>25</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <grpc.version>1.82.0</grpc.version>
+        <grpc.version>1.82.2</grpc.version>
         <protobuf-java.version>4.35.1</protobuf-java.version>
         <protovalidate.version>1.2.2</protovalidate.version>
 

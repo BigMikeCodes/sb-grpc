@@ -36,9 +36,9 @@
         <java.version>25</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <grpc.version>1.80.0</grpc.version>
-        <protobuf-java.version>4.34.0</protobuf-java.version>
-        <protovalidate.version>1.1.1</protovalidate.version>
+        <grpc.version>1.82.2</grpc.version>
+        <protobuf-java.version>4.35.1</protobuf-java.version>
+        <protovalidate.version>1.2.2</protovalidate.version>
 
         <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
         <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
@@ -46,14 +46,14 @@
         <git-commit-id-maven-plugin.version>9.0.2</git-commit-id-maven-plugin.version>
 
 <!--        Base image-->
-        <from.image>gcr.io/distroless/java25-debian13@sha256:34596c2b01eae269c67370572ccf9cba6cd26ecd2eb171e1d90419060c6297c5</from.image>
+        <from.image>gcr.io/distroless/java25-debian13@sha256:e1656e4b0450ee3343ca54f37d040385594734d3b4085b12ea0c4d9f601101bb</from.image>
 
 <!--        Produced image (tags applied further down)-->
         <to.image>bigmikecodes/grpc-server</to.image>
 
         <junit-jupiter.version>6.0.2</junit-jupiter.version>
         <testcontainers.version>2.0.3</testcontainers.version>
-        <faildafe-plugin.version>3.5.4</faildafe-plugin.version>
+        <failsafe-plugin.version>3.5.4</failsafe-plugin.version>
     </properties>
 
     <dependencies>
@@ -228,7 +228,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${faildafe-plugin.version}</version>
+                <version>${failsafe-plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>

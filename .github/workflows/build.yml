@@ -2,6 +2,10 @@ name: build
 on: [workflow_dispatch]
 jobs:
     build:
+      permissions:
+        contents: read
+        packages: write
+
       runs-on: ubuntu-latest
       steps:
         - name: checkout
@@ -22,8 +26,8 @@ jobs:
 
         - name: maven build
           env:
-            DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-            DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+            REGISTRY_USER: ${{ github.actor }}
+            REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           working-directory: './src/be/grpc-server'
           run: |
             mvn compile com.google.cloud.tools:jib-maven-plugin:build \

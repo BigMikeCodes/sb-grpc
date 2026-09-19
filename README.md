@@ -1,17 +1,18 @@
 ## Spring Boot 4 + gRPC
 
-Demo project treating gRPC & it's associated protobuf files as first class citizens.
+Demo project treating gRPC & its associated protobuf files as first-class citizens.
 
 Using buf to generate server stubs and client code.
 
 Aim is for this to:
-1. provide a realistic example of something you'd see in the wild, going beyond the standard medium.com copy paste slop & 
+1. provide a realistic example of something you'd see in the wild, going beyond the standard medium.com copy and paste slop
 2. Stay close to the bleeding edge
 
 ### Features
-- Containerised via Jib using google Debian 13 + java 25 distroless base image 
+- Containerised via Jib using Google Debian 13 + java 25 distroless base image 
 - Protovalidate for message validation
 - Buf for protobuf compilation
+- Remote proto definitions. Protos are pulled from a [separate git repository](https://github.com/BigMikeCodes/sb-grpc-protos)
 
 ## TODO
 - [x] buf server stub generation

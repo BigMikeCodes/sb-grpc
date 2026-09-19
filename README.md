@@ -12,6 +12,7 @@ Aim is for this to:
 - Containerised via Jib using google Debian 13 + java 25 distroless base image 
 - Protovalidate for message validation
 - Buf for protobuf compilation
+- Remote proto definitions. Protos are pulled from a [separate git repository](https://github.com/BigMikeCodes/sb-grpc-protos)
 
 ## TODO
 - [x] buf server stub generation

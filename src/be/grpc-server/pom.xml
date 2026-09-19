@@ -221,6 +221,9 @@
                             <jvmFlag>-XX:+UseStringDeduplication</jvmFlag>
                             <jvmFlag>-XX:+DisableExplicitGC</jvmFlag>
                         </jvmFlags>
+                        <labels>
+                            <org.opencontainers.image.source>https://github.com/BigMikeCodes/sb-grpc</org.opencontainers.image.source>
+                        </labels>
                     </container>
                 </configuration>
             </plugin>

@@ -30,7 +30,7 @@ jobs:
             REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           working-directory: './src/be/grpc-server'
           run: |
-            mvn compile com.google.cloud.tools:jib-maven-plugin:build \
+            mvn compile jib:build \
               -Djib.to.auth.username=$REGISTRY_USER \
               -Djib.to.auth.password=$REGISTRY_TOKEN \
               --batch-mode

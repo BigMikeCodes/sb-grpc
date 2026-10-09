@@ -40,10 +40,10 @@
         <protobuf-java.version>4.35.1</protobuf-java.version>
         <protovalidate.version>1.2.2</protovalidate.version>
 
-        <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
-        <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
+        <exec-maven-plugin.version>3.6.4</exec-maven-plugin.version>
+        <build-helper-maven-plugin.version>3.6.2</build-helper-maven-plugin.version>
         <jib-maven-plugin.version>3.5.2</jib-maven-plugin.version>
-        <git-commit-id-maven-plugin.version>9.0.2</git-commit-id-maven-plugin.version>
+        <git-commit-id-maven-plugin.version>10.0.1</git-commit-id-maven-plugin.version>
 
 <!--        Base image-->
         <from.image>gcr.io/distroless/java25-debian13@sha256:e1656e4b0450ee3343ca54f37d040385594734d3b4085b12ea0c4d9f601101bb</from.image>
@@ -53,7 +53,7 @@
 
         <junit-jupiter.version>6.0.2</junit-jupiter.version>
         <testcontainers.version>2.0.3</testcontainers.version>
-        <failsafe-plugin.version>3.5.4</failsafe-plugin.version>
+        <failsafe-plugin.version>3.6.0</failsafe-plugin.version>
     </properties>
 
     <dependencies>
@@ -195,18 +195,19 @@
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
                 <version>${jib-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>build-container</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>dockerBuild</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <configuration>
                     <from>
                         <image>${from.image}</image>
+                        <platforms>
+                            <platform>
+                                <architecture>amd64</architecture>
+                                <os>linux</os>
+                            </platform>
+                            <platform>
+                                <architecture>arm64</architecture>
+                                <os>linux</os>
+                            </platform>
+                        </platforms>
                     </from>
                     <to>
                         <!--suppress UnresolvedMavenProperty -->
@@ -228,27 +229,71 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${failsafe-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <systemPropertyVariables>
-                        <!--suppress UnresolvedMavenProperty -->
-                        <sut.image.name>${to.image}:${git.commit.id.full}</sut.image.name>
-                    </systemPropertyVariables>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>ci</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>build-local-test-image</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>dockerBuild</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${failsafe-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <!--suppress UnresolvedMavenProperty -->
+                                <sut.image.name>${to.image}:${git.commit.id.full}</sut.image.name>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>multi-arch</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>publish-multi-arch-image</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

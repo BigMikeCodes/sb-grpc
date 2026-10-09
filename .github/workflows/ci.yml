@@ -22,4 +22,8 @@ jobs:
 
       - name: maven build
         working-directory: './src/be/grpc-server'
-        run: mvn clean verify -B --batch-mode
+        run: |
+          mvn \
+          --batch-mode \
+          --activate-profiles=ci \
+          verify

@@ -5,12 +5,14 @@ jobs:
     strategy:
       matrix:
         include:
-          # x86
+          # amd64
           - os: 'ubuntu-26.04'
             platform: 'linux/amd64'
-          # arm
+            name: 'amd64'
+          # arm64
           - os: 'ubuntu-26.04-arm'
             platform: 'linux/arm64'
+            name: 'arm64'
 
     runs-on: ${{ matrix.os }}
     env:
@@ -74,5 +76,5 @@ jobs:
       - name: Upload SBOM
         uses: actions/upload-artifact@v7
         with:
-          name: '${{ matrix.platform }}-sbom'
+          name: '${{ matrix.name }}-sbom'
           path: 'sbom.json'

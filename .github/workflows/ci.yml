@@ -16,7 +16,7 @@ jobs:
     env:
       IMAGE_REF: 'ghcr.io/bigmikecodes/sb-grpc:${{ github.sha }}'
       TRIVY_VERSION: 'v0.75.0'
-      BUF_VERSION: 'v1.66.1'
+      BUF_VERSION: '1.66.1'
 
     permissions:
       contents: read

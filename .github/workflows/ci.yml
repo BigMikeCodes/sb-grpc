@@ -49,14 +49,27 @@ jobs:
           -Djib.from.platforms=${{ matrix.platform }} \
           verify
 
-      - name: Trivy - Scan
+      # Produce SBOM from the built image
+      - name: Trivy - SBOM
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.IMAGE_REF }}
+          format: 'cyclonedx'
+          hide-progress: true
+          output: 'sbom.cdx.json'
+          version: ${{ env.TRIVY_VERSION }}
+
+      # Scan the SBOM from prior step
+      - name: Trivy - Vulnerability Scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: 'sbom'
           format: 'sarif'
+          scan-ref: 'sbom.cdx.json'
           hide-progress: true
           output: 'trivy-results.sarif'
           version: ${{ env.TRIVY_VERSION }}
+          skip-setup-trivy: 'true'
 
       - name: Upload scan results
         uses: github/codeql-action/upload-sarif@v4
@@ -64,17 +77,8 @@ jobs:
           sarif_file: 'trivy-results.sarif'
           category: 'trivy'
 
-      - name: Trivy - SBOM
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          image-ref: ${{ env.IMAGE_REF }}
-          format: 'cyclonedx'
-          hide-progress: true
-          output: 'sbom.json'
-          version: ${{ env.TRIVY_VERSION }}
-
       - name: Upload SBOM
         uses: actions/upload-artifact@v7
         with:
           name: '${{ matrix.name }}-sbom'
-          path: 'sbom.json'
+          path: '${{ matrix.name }}.cdx.json'

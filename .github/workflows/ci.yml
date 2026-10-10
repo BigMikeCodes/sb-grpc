@@ -19,6 +19,8 @@ jobs:
       IMAGE_REF: 'ghcr.io/bigmikecodes/sb-grpc:${{ github.sha }}'
       TRIVY_VERSION: 'v0.75.0'
       BUF_VERSION: '1.66.1'
+      SARIF_FILE: 'trivy.${{ matrix.name }}.sarif'
+      CYCLONEDX_FILE: 'sbom.${{ matrix.name }}.cdx.json'
 
     permissions:
       contents: read
@@ -56,7 +58,7 @@ jobs:
           image-ref: ${{ env.IMAGE_REF }}
           format: 'cyclonedx'
           hide-progress: true
-          output: 'sbom.cdx.json'
+          output: ${{ env.CYCLONEDX_FILE }}
           version: ${{ env.TRIVY_VERSION }}
 
       # Scan the SBOM from prior step
@@ -67,18 +69,18 @@ jobs:
           format: 'sarif'
           scan-ref: 'sbom.cdx.json'
           hide-progress: true
-          output: 'trivy-results.sarif'
+          output: ${{ env.SARIF_FILE }}
           version: ${{ env.TRIVY_VERSION }}
           skip-setup-trivy: 'true'
 
       - name: Upload scan results
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: 'trivy-results.sarif'
-          category: 'trivy'
+          sarif_file: ${{ env.SARIF_FILE }}
+          category: 'trivy-${{ matrix.name }}'
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v7
         with:
-          name: '${{ matrix.name }}-sbom'
-          path: '${{ matrix.name }}.cdx.json'
+          name: ${{ env.CYCLONEDX_FILE }}
+          path: ${{ env.CYCLONEDX_FILE }}

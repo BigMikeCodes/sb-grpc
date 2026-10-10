@@ -198,16 +198,6 @@
                 <configuration>
                     <from>
                         <image>${from.image}</image>
-                        <platforms>
-                            <platform>
-                                <architecture>amd64</architecture>
-                                <os>linux</os>
-                            </platform>
-                            <platform>
-                                <architecture>arm64</architecture>
-                                <os>linux</os>
-                            </platform>
-                        </platforms>
                     </from>
                     <to>
                         <!--suppress UnresolvedMavenProperty -->
@@ -274,6 +264,7 @@
             </build>
         </profile>
 
+<!--        Might not need this?-->
         <profile>
             <id>multi-arch</id>
             <build>
@@ -281,6 +272,21 @@
                     <plugin>
                         <groupId>com.google.cloud.tools</groupId>
                         <artifactId>jib-maven-plugin</artifactId>
+                        <configuration>
+                            <from>
+                                <image>${from.image}</image>
+                                <platforms>
+                                    <platform>
+                                        <architecture>amd64</architecture>
+                                        <os>linux</os>
+                                    </platform>
+                                    <platform>
+                                        <architecture>arm64</architecture>
+                                        <os>linux</os>
+                                    </platform>
+                                </platforms>
+                            </from>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>publish-multi-arch-image</id>

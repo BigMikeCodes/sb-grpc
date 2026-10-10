@@ -2,10 +2,22 @@ name: ci
 on: [workflow_dispatch]
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          # x86
+          - os: 'ubuntu-26.04'
+            platform: 'linux/amd64'
+          # arm
+          - os: 'ubuntu-26.04-arm'
+            platform: 'linux/arm64'
+
+    runs-on: ${{ matrix.os }}
     env:
       IMAGE_REF: 'ghcr.io/bigmikecodes/sb-grpc:${{ github.sha }}'
       TRIVY_VERSION: 'v0.75.0'
+      BUF_VERSION: 'v1.66.1'
+
     permissions:
       contents: read
       security-events: write
@@ -16,7 +28,7 @@ jobs:
       - name: setup buf
         uses: bufbuild/buf-action@v1
         with:
-          version: 1.66.1
+          version: ${{ env.BUF_VERSION }}
           setup_only: true
 
       - name: setup java
@@ -32,6 +44,7 @@ jobs:
           mvn \
           --batch-mode \
           --activate-profiles=ci \
+          -Djib.from.platforms=${{ matrix.platform }} \
           verify
 
       - name: Trivy - Scan
@@ -43,13 +56,13 @@ jobs:
           output: 'trivy-results.sarif'
           version: ${{ env.TRIVY_VERSION }}
 
-      - name: Upload trivy scan results
+      - name: Upload scan results
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: 'trivy-results.sarif'
           category: 'trivy'
 
-      - name: SBOM - Trivy
+      - name: Trivy - SBOM
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.IMAGE_REF }}
@@ -61,5 +74,5 @@ jobs:
       - name: Upload SBOM
         uses: actions/upload-artifact@v7
         with:
-          name: 'image-sbom'
+          name: '${{ matrix.platform }}-sbom'
           path: 'sbom.json'

@@ -3,6 +3,9 @@ on: [workflow_dispatch]
 jobs:
   ci:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: checkout
         uses: actions/checkout@v6
@@ -27,3 +30,16 @@ jobs:
           --batch-mode \
           --activate-profiles=ci \
           verify
+
+      - name: Scan with trivy
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: 'ghcr.io/bigmikecodes/sb-grpc:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload trivy scan results
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: 'trivy'

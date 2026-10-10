@@ -3,6 +3,12 @@ on: [workflow_dispatch]
 jobs:
   ci:
     runs-on: ubuntu-latest
+    env:
+      IMAGE_REF: 'ghcr.io/bigmikecodes/sb-grpc:${{ github.sha }}'
+      TRIVY_VERSION: 'v0.75.0'
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: checkout
         uses: actions/checkout@v6
@@ -27,3 +33,33 @@ jobs:
           --batch-mode \
           --activate-profiles=ci \
           verify
+
+      - name: Trivy - Scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ env.IMAGE_REF }}
+          format: 'sarif'
+          hide-progress: true
+          output: 'trivy-results.sarif'
+          version: ${{ env.TRIVY_VERSION }}
+
+      - name: Upload trivy scan results
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: 'trivy'
+
+      - name: SBOM - Trivy
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ env.IMAGE_REF }}
+          format: 'cyclonedx'
+          hide-progress: true
+          output: 'sbom.json'
+          version: ${{ env.TRIVY_VERSION }}
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v7
+        with:
+          name: 'image-sbom'
+          path: 'sbom.json'

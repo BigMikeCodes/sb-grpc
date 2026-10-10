@@ -67,7 +67,7 @@ jobs:
         with:
           scan-type: 'sbom'
           format: 'sarif'
-          scan-ref: 'sbom.cdx.json'
+          scan-ref: ${{ env.CYCLONEDX_FILE }}
           hide-progress: true
           output: ${{ env.SARIF_FILE }}
           version: ${{ env.TRIVY_VERSION }}

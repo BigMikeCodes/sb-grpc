@@ -2,7 +2,29 @@ name: ci
 on: [workflow_dispatch]
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          # amd64
+          - os: 'ubuntu-26.04'
+            platform: 'linux/amd64'
+            name: 'amd64'
+          # arm64
+          - os: 'ubuntu-26.04-arm'
+            platform: 'linux/arm64'
+            name: 'arm64'
+
+    runs-on: ${{ matrix.os }}
+    env:
+      IMAGE_REF: 'ghcr.io/bigmikecodes/sb-grpc:${{ github.sha }}'
+      TRIVY_VERSION: 'v0.75.0'
+      BUF_VERSION: '1.66.1'
+      SARIF_FILE: 'trivy.${{ matrix.name }}.sarif'
+      CYCLONEDX_FILE: 'sbom.${{ matrix.name }}.cdx.json'
+
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: checkout
         uses: actions/checkout@v6
@@ -10,7 +32,7 @@ jobs:
       - name: setup buf
         uses: bufbuild/buf-action@v1
         with:
-          version: 1.66.1
+          version: ${{ env.BUF_VERSION }}
           setup_only: true
 
       - name: setup java
@@ -26,4 +48,39 @@ jobs:
           mvn \
           --batch-mode \
           --activate-profiles=ci \
+          -Djib.from.platforms=${{ matrix.platform }} \
           verify
+
+      # Produce SBOM from the built image
+      - name: Trivy - SBOM
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ env.IMAGE_REF }}
+          format: 'cyclonedx'
+          hide-progress: true
+          output: ${{ env.CYCLONEDX_FILE }}
+          version: ${{ env.TRIVY_VERSION }}
+
+      # Scan the SBOM from prior step
+      - name: Trivy - Vulnerability Scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: 'sbom'
+          format: 'sarif'
+          scan-ref: ${{ env.CYCLONEDX_FILE }}
+          hide-progress: true
+          output: ${{ env.SARIF_FILE }}
+          version: ${{ env.TRIVY_VERSION }}
+          skip-setup-trivy: 'true'
+
+      - name: Upload scan results
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: ${{ env.SARIF_FILE }}
+          category: 'trivy-${{ matrix.name }}'
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ env.CYCLONEDX_FILE }}
+          path: ${{ env.CYCLONEDX_FILE }}

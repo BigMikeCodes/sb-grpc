@@ -61,7 +61,7 @@ jobs:
           --batch-mode \
           --activate-profiles=ci \
           -Djib.from.platforms=${{ matrix.platform }} \
-          verify
+          verify --debug
 
       - name: save Jib cache
         if: steps.jib-cache-restore.outputs.cache-hit != 'true'

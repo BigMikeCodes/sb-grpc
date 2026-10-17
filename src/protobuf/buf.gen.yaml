@@ -14,7 +14,7 @@ managed:
       value: true
 plugins:
   # 1. Generates the Protobuf Message classes (the data models)
-  - remote: buf.build/protocolbuffers/java:v35.1
+  - remote: buf.build/protocolbuffers/java:v36.2
     out: ../be/grpc-server/target/generated-sources/protobuf
 
   # 2. Generates the gRPC Service classes (the server base and client stubs)

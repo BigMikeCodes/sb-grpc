@@ -29,17 +29,17 @@ jobs:
       - name: checkout
         uses: actions/checkout@v6
 
-#      - name: get Jib cache key
-#        id: jib-cache-key
-#        working-directory: './src/be/grpc-server'
-#        run: echo "key=$(./jib-cache-key.sh)" >> "$GITHUB_OUTPUT"
-#
-#      - name: restore Jib cache
-#        id: jib-cache-restore
-#        uses: actions/cache/restore@v6.1.0
-#        with:
-#          path: '~/.cache/google-cloud-tools-java/jib'
-#          key: 'jib-${{ steps.jib-cache-key.outputs.key }}-${{ matrix.name }}'
+      - name: get Jib cache key
+        id: jib-cache-key
+        working-directory: './src/be/grpc-server'
+        run: echo "key=$(./jib-cache-key.sh)" >> "$GITHUB_OUTPUT"
+
+      - name: restore Jib cache
+        id: jib-cache-restore
+        uses: actions/cache/restore@v6.1.0
+        with:
+          path: '~/.cache/google-cloud-tools-java/jib'
+          key: 'jib-${{ steps.jib-cache-key.outputs.key }}-${{ matrix.name }}'
 
       - name: setup buf
         uses: bufbuild/buf-action@v1
@@ -61,7 +61,7 @@ jobs:
           --batch-mode \
           --activate-profiles=ci \
           -Djib.from.platforms=${{ matrix.platform }} \
-          verify --debug
+          verify
 
       - name: save Jib cache
         if: steps.jib-cache-restore.outputs.cache-hit != 'true'

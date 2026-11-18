@@ -11,18 +11,20 @@ jobs:
         - name: checkout
           uses: actions/checkout@v6
 
-        - name: setup buf
-          uses: bufbuild/buf-action@v1
-          with:
-            version: 1.66.1
-            setup_only: true
-
         - name: setup java
           uses: actions/setup-java@v6
           with:
             java-version-file: '.sdkmanrc'
             cache: 'maven'
-            cache-dependency-path: './src/be/grpc-server/pom.xml'
+            cache-dependency-path: |
+              ./pom.xml
+              ./src/tools/buf-maven-plugin/pom.xml
+              ./src/be/grpc-server/pom.xml
+
+        # Install the in-repo buf-maven-plugin so grpc-server can resolve it.
+        # jib:build has to run on grpc-server alone, so a reactor build from the root won't do here
+        - name: install buf-maven-plugin
+          run: mvn install --projects src/tools/buf-maven-plugin -Dinvoker.skip --batch-mode
 
         - name: maven build
           env:

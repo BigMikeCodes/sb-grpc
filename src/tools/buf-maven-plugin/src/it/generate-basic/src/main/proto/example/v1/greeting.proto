@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package example.v1;
+
+option java_package = "dev.michaelfarrant.it.example.v1";
+option java_multiple_files = true;
+
+message Greeting {
+  string message = 1;
+}
